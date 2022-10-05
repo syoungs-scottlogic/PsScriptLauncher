@@ -10,8 +10,7 @@ $introText = @"
 "@
 
     ###  Global Variables ###
-$hashTable = @{}
-
+$hashTable = New-Object System.Collections.ArrayList
 Write-Host $introText -BackgroundColor Black -ForegroundColor green
 
 
@@ -19,7 +18,7 @@ $newItems = New-Object System.Collections.ArrayList
 $awsObj = Get-Content "C:\users\syoungs\awstext.txt"  #aws ec2 describe-instances --profile sl --query 'Reservations[*].Instances[*].[InstanceId, Tags[?Key==`Name`].Value | [0]]' --output text
 
 $newItems.Add($awsObj) | Out-Null
-$awsObj | foreach{$newItems = $_.split(); $hashTable.Add("$($newItems[1])", "$($newItems[0])") }
+$awsObj | foreach{$newItems = $_.split();  $hashTable.Add(@{"$($newItems[1])"="$($newItems[0])"}) | Out-Null}
 
 function ListInstances()
 {
@@ -31,9 +30,10 @@ function ListInstances()
         $i++
     }
 
-    do{[int]$check = Read-Host "Please select an option"}
+    do{[int]$check = Read-Host "`nPlease select an option"}
     while($check -lt $i -or $check -gt $i)
     $check - 1
+    Clear-Host
 
     ListInstanceScripts($check)
     
@@ -42,10 +42,12 @@ function ListInstances()
 function ListInstanceScripts($check)
 {
     # Here are the available scripts. 
+    $dir = Get-ChildItem .\sh-scripts
+    
 
 }
 
-ListInstances
+#ListInstances
 
 
 
