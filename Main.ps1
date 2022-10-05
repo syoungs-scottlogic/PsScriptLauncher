@@ -35,8 +35,14 @@ function ListInstances()
     while($check -lt $i -or $check -gt $i)
     $check - 1
 
-
+    ListInstanceScripts($check)
     
+}
+
+function ListInstanceScripts($check)
+{
+    # Here are the available scripts. 
+
 }
 
 ListInstances
