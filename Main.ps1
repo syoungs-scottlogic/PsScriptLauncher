@@ -12,6 +12,7 @@ $introText = @"
     ###  Global Variables ###
 $hashTable = New-Object System.Collections.ArrayList
 [int]$instanceChoice = 0 
+$profileName = "default"
 
     ### Code initialisations ###
 Write-Host $introText -BackgroundColor Black -ForegroundColor green
@@ -20,6 +21,13 @@ $awsObj = Get-Content "C:\users\syoungs\awstext.txt"  #aws ec2 describe-instance
 
 $newItems.Add($awsObj) | Out-Null
 $awsObj | foreach{$newItems = $_.split();  $hashTable.Add(@{"$($newItems[1])"="$($newItems[0])"}) | Out-Null}
+
+    #>> Get AWS Profile <<#
+$myProfile = Write-Host "Please enter an AWS profile. (Default is $($profileName)"
+if(-not ([string]::IsNullOrEmpty()))
+{
+    $profileName = $myProfile
+}
 
 
     ### Functions ###
@@ -43,8 +51,7 @@ function ListInstances()
 }
 
 function ListInstanceScripts()
-{
-    # Here are the available scripts. 
+{ 
     $dir = Get-ChildItem .\sh-scripts -Name
     $scripts = New-Object System.Collections.ArrayList
     Write-Host "Available scripts for $($hashTable[$instanceChoice].keys) ($($hashTable[$instanceChoice].Values)):`n"
@@ -68,21 +75,23 @@ function ListInstanceScripts()
 
     switch($exeCheck) {
         'y' {
-            #Run script
-            Write-Host "run script"
+            RunScript($scripts[$scriptCheck])
         }
         'n' {
         Clear-Host
         ListInstances
         }
     }
-        <#
-            Are you sure you would like to execute <script> against <instance>?
-            execute sctips against instance via AWS CLI
-        #>
-
 }
 
+function RunScript($sctiptToRun)
+{
+    Write-Host $sctiptToRun
+    # execute sctips against instance via AWS CLI
+}
+
+
+    ### Entry ###
 ListInstances
 
 
