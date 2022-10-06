@@ -71,7 +71,7 @@ function ListInstanceScripts()
     
     do
     {
-        $exeCheck = Read-Host "Are you sure you would like to execute $($scripts[$scriptCheck]) against $($hashTable[$instanceChoice].Keys) ($($hashTable[$instanceChoice].Values))? y/n"
+        $exeCheck = Read-Host "`nAre you sure you would like to execute $($scripts[$scriptCheck]) against $($hashTable[$instanceChoice].Keys) ($($hashTable[$instanceChoice].Values))? y/n"
         $exeCheck.ToLower()
     } while ($exeCheck -notin 'y', 'n')
 
@@ -90,6 +90,10 @@ function RunScript($sctiptToRun)
 {
     Write-Host $sctiptToRun
     # execute sctips against instance via AWS CLI
+    
+    # for each in folder
+        # if folder matches $scripttorun
+        # put script into s3
 }
 
 
@@ -97,5 +101,14 @@ function RunScript($sctiptToRun)
 ListInstances
 
 
+<#
+    have and s3 bucket with folders for each instanceID.
+    The PS front end FTP PUTs to the S3 folder. 
+        Bucket name:
+        sy-scriptlaunchtest
+            AWS COMMAND
+            aws s3api put-object --bucket "sy-scriptlaunchtest" --key "instance/test.txt" --body .\sh-scripts\test.txt  --profile sl
+    A small script on eact instance polls the their own folder.
+    The instance pulls down the script and runs it. 
 
-
+#>
