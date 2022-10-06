@@ -45,13 +45,39 @@ function ListInstances()
 function ListInstanceScripts()
 {
     # Here are the available scripts. 
-    $dir = Get-ChildItem .\sh-scripts 
+    $dir = Get-ChildItem .\sh-scripts -Name
+    $scripts = New-Object System.Collections.ArrayList
+    Write-Host "Available scripts for $($hashTable[$instanceChoice].keys) ($($hashTable[$instanceChoice].Values)):`n"
+    [int]$i = 1
+    foreach($d in $dir)
+    {
+        $scripts.Add($d) | Out-Null
+        Write-Host "$($i). $($d)"
+        $i++
+    }
+    do {[int]$scriptCheck = Read-Host "`nPlease select a script to run"}
+    while($scriptCheck -lt 0 -or $scriptCheck -gt $i)
+
+    $scriptCheck--
     
-    Write-Host "Available scripts for $($hashTable[$instanceChoice].keys) ($($hashTable[$instanceChoice].Values)):"
-    Write-Host $dir
+    do
+    {
+        $exeCheck = Read-Host "Are you sure you would like to execute $($scripts[$scriptCheck]) against $($hashTable[$instanceChoice].Keys) ($($hashTable[$instanceChoice].Values))? y/n"
+        $exeCheck.ToLower()
+    } while ($exeCheck -notin 'y', 'n')
+
+    switch($exeCheck) {
+        'y' {
+            #Run script
+            Write-Host "run script"
+        }
+        'n' {
+        Clear-Host
+        ListInstances
+        }
+    }
         <#
-            get all scripts.
-            be able to select scripts. possibly array.
+            Are you sure you would like to execute <script> against <instance>?
             execute sctips against instance via AWS CLI
         #>
 
