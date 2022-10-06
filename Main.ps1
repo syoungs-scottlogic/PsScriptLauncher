@@ -23,8 +23,9 @@ $newItems.Add($awsObj) | Out-Null
 $awsObj | foreach{$newItems = $_.split();  $hashTable.Add(@{"$($newItems[1])"="$($newItems[0])"}) | Out-Null}
 
     #>> Get AWS Profile <<#
-$myProfile = Write-Host "Please enter an AWS profile. (Default is $($profileName)"
-if(-not ([string]::IsNullOrEmpty()))
+$myProfile = read-Host "Please enter an AWS profile. (Default is $($profileName))"
+Write-Host ""
+if(-not ([string]::IsNullOrEmpty($myProfile)))
 {
     $profileName = $myProfile
 }
@@ -33,6 +34,7 @@ if(-not ([string]::IsNullOrEmpty()))
     ### Functions ###
 function ListInstances()
 {
+    Write-Host "Available instances:`n" -ForegroundColor green
     $i = 1
     foreach($item in $hashTable)
     {        
