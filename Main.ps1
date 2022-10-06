@@ -13,6 +13,7 @@ $introText = @"
 $hashTable = New-Object System.Collections.ArrayList
 [int]$instanceChoice = 0 
 $profileName = "default"
+$bucket = "sy-scriptlaunchtest"
 
     ### Code initialisations ###
 Write-Host $introText -BackgroundColor Black -ForegroundColor green
@@ -86,7 +87,7 @@ function ListInstanceScripts()
     }
 }
 
-function RunScript($sctiptToRun)
+function RunScript($sctiptToRun) # RENAME THIS (and its call above)
 {
     Write-Host $sctiptToRun
     # execute sctips against instance via AWS CLI
@@ -107,8 +108,11 @@ ListInstances
         Bucket name:
         sy-scriptlaunchtest
             AWS COMMAND
-            aws s3api put-object --bucket "sy-scriptlaunchtest" --key "instance/test.txt" --body .\sh-scripts\test.txt  --profile sl
+            aws s3api put-object --bucket $bucket --key "instance/test.txt" --body .\sh-scripts\test.txt  --profile sl
     A small script on eact instance polls the their own folder.
     The instance pulls down the script and runs it. 
+
+    have each folder for instance ID, then I can match it from this script.
+    Have the bucket as a variable to quickly swap between clients. 
 
 #>
