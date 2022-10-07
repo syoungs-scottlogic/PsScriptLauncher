@@ -17,3 +17,10 @@ aws s3 rm s3://${BUCKET}/${INSTANCEID}/ --recursive
 for file in $FILES
 do
     chmod +x $file
+done
+
+for file in $FILES
+do
+    ./$file
+done
+

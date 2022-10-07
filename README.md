@@ -16,6 +16,8 @@ Please ensure the following is configured before using the script:
 
 The Main.ps1 script lives in the root directory and any scripts to be sent go into the sub-directory sh-scripts. In truth any file can be places into the folder to be pushed to an instance, but it is assumed this tool is used for shell scripts.
 
+WILL REDO
+
 ```
 PsScriptLauncher/
 ├─ sh-scripts/
@@ -31,5 +33,5 @@ The script will begin by asking for your AWS profile and then list all instances
 
 The script will then list the available scripts in the directory `.\sh-scripts_` After confirmation the script will be placed into the S3 bucket via AWS CLI. A directory will be created in the bucket with the Indstance ID and the file placed in that directory (if there is no current directory, one will automatically be created).
 
-**"DRAFT"**
+**DRAFT**
 From there the Powershell script has finished it's job. The EC2 instance will poll the directory matching it's own name on the bucket and pull down the file, deleting it from S3 afterwards. The instance will then run the script.
