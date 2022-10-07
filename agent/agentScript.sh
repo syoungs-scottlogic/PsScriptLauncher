@@ -21,4 +21,7 @@ do
     ./$file
 done
 
-# * * * * * /bin/bash /home/ec2-user/agentScript.sh
+for file in $FILES
+do
+    rm -f $file
+done

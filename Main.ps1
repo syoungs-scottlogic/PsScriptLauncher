@@ -10,26 +10,25 @@ $introText = @"
 "@
 
     ###  Global Variables ###
-$hashTable = New-Object System.Collections.ArrayList
-[int]$instanceChoice = 0 
-$profileName = "default"
 $bucket = "sy-scriptlaunchtest"
 
     ### Code initialisations ###
 Write-Host $introText -BackgroundColor Black -ForegroundColor green
 $newItems = New-Object System.Collections.ArrayList
-$awsObj = aws ec2 describe-instances --profile sl --query 'Reservations[*].Instances[*].[InstanceId, Tags[?Key==`Name`].Value | [0]]' --output text
+$hashTable = New-Object System.Collections.ArrayList
+[int]$instanceChoice = 0 
+$profileName = "default"
 
-$newItems.Add($awsObj) | Out-Null
-$awsObj | foreach{$newItems = $_.split();  $hashTable.Add(@{"$($newItems[1])"="$($newItems[0])"}) | Out-Null}
-
-    #>> Get AWS Profile <<#
+    #>> Get AWS Profile and configure arrays <<#
 $myProfile = read-Host "Please enter an AWS profile. (Default is $($profileName))"
 Write-Host ""
 if(-not ([string]::IsNullOrEmpty($myProfile)))
 {
     $profileName = $myProfile
 }
+$awsObj = aws ec2 describe-instances --profile $profileName --query 'Reservations[*].Instances[*].[InstanceId, Tags[?Key==`Name`].Value | [0]]' --output text
+$newItems.Add($awsObj) | Out-Null
+$awsObj | foreach{$newItems = $_.split();  $hashTable.Add(@{"$($newItems[1])"="$($newItems[0])"}) | Out-Null}
 
 
     ### Functions ###
@@ -48,11 +47,10 @@ function ListInstances()
     $check--
     $instanceChoice = $check
     Clear-Host
-
-    ListInstanceScripts
-    
+    ListInstanceScripts    
 }
 
+# List available scripts from .\scripts
 function ListInstanceScripts()
 { 
     $dir = Get-ChildItem .\sh-scripts -Name
@@ -87,7 +85,8 @@ function ListInstanceScripts()
     }
 }
 
-function PutInS3($scriptToPush) # RENAME THIS (and its call above)
+# Place the specified script into S3 bucket to be picked up by instance.
+function PutInS3($scriptToPush)
 {
     $dir = Get-ChildItem .\sh-scripts -Name
     foreach($d in $dir)
@@ -106,17 +105,5 @@ function PutInS3($scriptToPush) # RENAME THIS (and its call above)
 
 }
 
-
     ### Entry ###
 ListInstances
-
-
-<#
-
-    A small script on eact instance polls the their own folder.
-    The instance pulls down the script and runs it. 
-
-    have each folder for instance ID, then I can match it from this script.
-    Have the bucket as a variable to quickly swap between clients. 
-
-#>
