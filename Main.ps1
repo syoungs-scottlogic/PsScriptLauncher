@@ -18,7 +18,7 @@ $bucket = "sy-scriptlaunchtest"
     ### Code initialisations ###
 Write-Host $introText -BackgroundColor Black -ForegroundColor green
 $newItems = New-Object System.Collections.ArrayList
-$awsObj = Get-Content "C:\users\syoungs\awstext.txt"  #aws ec2 describe-instances --profile sl --query 'Reservations[*].Instances[*].[InstanceId, Tags[?Key==`Name`].Value | [0]]' --output text
+$awsObj = aws ec2 describe-instances --profile sl --query 'Reservations[*].Instances[*].[InstanceId, Tags[?Key==`Name`].Value | [0]]' --output text
 
 $newItems.Add($awsObj) | Out-Null
 $awsObj | foreach{$newItems = $_.split();  $hashTable.Add(@{"$($newItems[1])"="$($newItems[0])"}) | Out-Null}

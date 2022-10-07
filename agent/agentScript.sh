@@ -24,3 +24,4 @@ do
     ./$file
 done
 
+# * * * * * /bin/bash /home/ec2-user/agentScript.sh
