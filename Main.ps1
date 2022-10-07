@@ -78,7 +78,7 @@ function ListInstanceScripts()
 
     switch($exeCheck) {
         'y' {
-            RunScript($scripts[$scriptCheck])
+            PutInS3($scripts[$scriptCheck])
         }
         'n' {
         Clear-Host
@@ -87,14 +87,23 @@ function ListInstanceScripts()
     }
 }
 
-function RunScript($sctiptToRun) # RENAME THIS (and its call above)
+function PutInS3($scriptToPush) # RENAME THIS (and its call above)
 {
-    Write-Host $sctiptToRun
-    # execute sctips against instance via AWS CLI
-    
-    # for each in folder
-        # if folder matches $scripttorun
-        # put script into s3
+    $dir = Get-ChildItem .\sh-scripts -Name
+    foreach($d in $dir)
+    {
+        try
+        {
+            if($d -eq $scriptToPush)
+            {
+            aws s3api put-object --bucket $bucket --key "$($hashTable[$instanceChoice].Values)/test.txt" --body ".\sh-scripts\$($scriptToPush)"  --profile $profileName
+            }
+        } catch {
+        Write-Host $_
+        Read-Host "`nAn error occured. Please check the above error and press enter to quit."
+        }
+    }
+
 }
 
 
@@ -103,12 +112,7 @@ ListInstances
 
 
 <#
-    have and s3 bucket with folders for each instanceID.
-    The PS front end FTP PUTs to the S3 folder. 
-        Bucket name:
-        sy-scriptlaunchtest
-            AWS COMMAND
-            aws s3api put-object --bucket $bucket --key "instance/test.txt" --body .\sh-scripts\test.txt  --profile sl
+
     A small script on eact instance polls the their own folder.
     The instance pulls down the script and runs it. 
 
