@@ -38,7 +38,7 @@ function ListInstances()
     $i = 1
     foreach($item in $hashTable)
     {        
-        Write-host "$($i). $($item.keys) ||| $($item.values)"
+        Write-host "$($i). $($item.keys) ### $($item.values)"
         $i++
     }
 

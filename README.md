@@ -53,4 +53,4 @@ In `Main.ps1` the variable `$bucket` can be edited to use any bucket you wish fo
 
 ### Agent.
 
-The file `PsScriptLauncher/agent/agentScript.sh` is the back-end tool used to run the scripts. Once this script is on the instance, it should be configured as an executable `chmod +x agentScript.sh` and a cronjob can be configured for this. Is is fine for this to be kept in the default root user pwd, and the crontab entry is: `* * * * * /bin/bash /home/ec2-user/agentScript.sh`, which will run the job every minute.
+The file `PsScriptLauncher/agent/agentScript.sh` is the back-end tool used to run the scripts. Once this script is on the instance, it should be configured as an executable `chmod +x agentScript.sh` and a cronjob can be configured for this. It is fine for this to be kept in the default root user pwd, and the crontab entry is: `* * * * * /bin/bash /home/ec2-user/agentScript.sh`, which will run the job every minute.
