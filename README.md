@@ -16,17 +16,14 @@ Please ensure the following is configured before using the script:
 
 The Main.ps1 script lives in the root directory and any scripts to be sent go into the sub-directory sh-scripts. In truth any file can be places into the folder to be pushed to an instance, but it is assumed this tool is used for shell scripts.
 
+```
 PsScriptLauncher/
-
 ├─ sh-scripts/
-
 │ ├─ exampleScript1.sh
-
 │ ├─ exampleScript2.sh
-
 ├─ Main.ps1
-
 ├─ README.md
+```
 
 ### Technical
 
