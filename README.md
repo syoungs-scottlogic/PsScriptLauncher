@@ -8,10 +8,10 @@ This script is used as a small tool to centrally launch scripts on AWS EC2 Insta
 
 Please ensure the following is configured before using the script:
 
-    * AWS CLI (both locally and on EC2 Instance(s))
-    * AWS CLI Credentials.
-    * Appropriate access in AWS.
-    * AWS role, bucket policy and permissions.
+    - AWS CLI (both locally and on EC2 Instance(s))
+    - AWS CLI Credentials.
+    - Appropriate access in AWS.
+    - AWS role, bucket policy and permissions.
 
 ## How does it work?
 
