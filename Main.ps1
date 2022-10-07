@@ -96,7 +96,7 @@ function PutInS3($scriptToPush) # RENAME THIS (and its call above)
         {
             if($d -eq $scriptToPush)
             {
-            aws s3api put-object --bucket $bucket --key "$($hashTable[$instanceChoice].Values)/test.txt" --body ".\sh-scripts\$($scriptToPush)"  --profile $profileName
+            aws s3api put-object --bucket $bucket --key "$($hashTable[$instanceChoice].Values)/$($scriptToPush)" --body ".\sh-scripts\$($scriptToPush)"  --profile $profileName
             }
         } catch {
         Write-Host $_
