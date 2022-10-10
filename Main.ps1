@@ -9,41 +9,37 @@ $introText = @"
 
 "@
 
-    ###  Global Variables ###
+###  Global Variables ###
 $bucket = "sy-scriptlaunchtest"
 
-    ### Code initialisations ###
+### Code initialisations ###
 Write-Host $introText -BackgroundColor Black -ForegroundColor green
 $newItems = New-Object System.Collections.ArrayList
 $hashTable = New-Object System.Collections.ArrayList
 [int]$instanceChoice = 0 
 $profileName = "default"
 
-    #>> Get AWS Profile and configure arrays <<#
+#>> Get AWS Profile and configure arrays <<#
 $myProfile = read-Host "Please enter an AWS profile. (Default is $($profileName))"
 Write-Host ""
-if(-not ([string]::IsNullOrEmpty($myProfile)))
-{
+if (-not ([string]::IsNullOrEmpty($myProfile))) {
     $profileName = $myProfile
 }
 $awsObj = aws ec2 describe-instances --profile $profileName --query 'Reservations[*].Instances[*].[InstanceId, Tags[?Key==`Name`].Value | [0]]' --output text
 $newItems.Add($awsObj) | Out-Null
-$awsObj | foreach{$newItems = $_.split();  $hashTable.Add(@{"$($newItems[1])"="$($newItems[0])"}) | Out-Null}
+$awsObj | foreach { $newItems = $_.split(); $hashTable.Add(@{"$($newItems[1])" = "$($newItems[0])" }) | Out-Null }
 
-
-    ### Functions ###
-function ListInstances()
-{
+### Functions ###
+function ListInstances() {
     Write-Host "Available instances:`n" -ForegroundColor green
     $i = 1
-    foreach($item in $hashTable)
-    {        
+    foreach ($item in $hashTable) {        
         Write-host "$($i). $($item.keys) ### $($item.values)"
         $i++
     }
 
-    do{[int]$check = Read-Host "`nPlease select an option"}
-    while($check -lt 0 -or $check -gt $i)
+    do { [int]$check = Read-Host "`nPlease select an option" }
+    while ($check -lt 0 -or $check -gt $i)
     $check--
     $instanceChoice = $check
     Clear-Host
@@ -51,59 +47,52 @@ function ListInstances()
 }
 
 # List available scripts from .\scripts
-function ListInstanceScripts()
-{ 
+function ListInstanceScripts() { 
     $dir = Get-ChildItem .\sh-scripts -Name
     $scripts = New-Object System.Collections.ArrayList
     Write-Host "Available scripts for $($hashTable[$instanceChoice].keys) ($($hashTable[$instanceChoice].Values)):`n"
     [int]$i = 1
-    foreach($d in $dir)
-    {
+    foreach ($d in $dir) {
         $scripts.Add($d) | Out-Null
         Write-Host "$($i). $($d)"
         $i++
     }
-    do {[int]$scriptCheck = Read-Host "`nPlease select a script to run"}
-    while($scriptCheck -lt 0 -or $scriptCheck -gt $i)
+    do { [int]$scriptCheck = Read-Host "`nPlease select a script to run" }
+    while ($scriptCheck -lt 0 -or $scriptCheck -gt $i)
 
     $scriptCheck--
     
-    do
-    {
+    do {
         $exeCheck = Read-Host "`nAre you sure you would like to execute $($scripts[$scriptCheck]) against $($hashTable[$instanceChoice].Keys) ($($hashTable[$instanceChoice].Values))? y/n"
         $exeCheck.ToLower()
     } while ($exeCheck -notin 'y', 'n')
 
-    switch($exeCheck) {
+    switch ($exeCheck) {
         'y' {
             PutInS3($scripts[$scriptCheck])
         }
         'n' {
-        Clear-Host
-        ListInstances
+            Clear-Host
+            ListInstances
         }
     }
 }
 
 # Place the specified script into S3 bucket to be picked up by instance.
-function PutInS3($scriptToPush)
-{
+function PutInS3($scriptToPush) {
     $dir = Get-ChildItem .\sh-scripts -Name
-    foreach($d in $dir)
-    {
-        try
-        {
-            if($d -eq $scriptToPush)
-            {
-            aws s3api put-object --bucket $bucket --key "$($hashTable[$instanceChoice].Values)/$($scriptToPush)" --body ".\sh-scripts\$($scriptToPush)"  --profile $profileName
+    foreach ($d in $dir) {
+        try {
+            if ($d -eq $scriptToPush) {
+                aws s3api put-object --bucket $bucket --key "$($hashTable[$instanceChoice].Values)/$($scriptToPush)" --body ".\sh-scripts\$($scriptToPush)"  --profile $profileName
             }
-        } catch {
-        Write-Host $_
-        Read-Host "`nAn error occured. Please check the above error and press enter to quit."
+        }
+        catch {
+            Write-Host $_
+            Read-Host "`nAn error occured. Please check the above error and press enter to quit."
         }
     }
-
 }
 
-    ### Entry ###
+### Entry ###
 ListInstances
