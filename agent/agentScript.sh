@@ -7,10 +7,10 @@ FILES="scripts/*"
 # copy contents of bucket
 COPYFILE=$(aws s3 cp s3://${BUCKET}/${INSTANCEID} scripts/. --recursive)
 
-# delete contents of s3 bucket.
+# delete contents of s3 bucket to prevent continous downloads. 
 aws s3 rm s3://${BUCKET}/${INSTANCEID}/ --recursive
 
-# Make files executable and then remove files. 
+# Make files executable and then remove files to prevent them being ran continously. 
 for file in $FILES
 do
     chmod +x $file

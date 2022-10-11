@@ -25,6 +25,7 @@ Write-Host ""
 if (-not ([string]::IsNullOrEmpty($myProfile))) {
     $profileName = $myProfile
 }
+# Initiate arrays for use at Main function.
 $awsObj = aws ec2 describe-instances --profile $profileName --query 'Reservations[*].Instances[*].[InstanceId, Tags[?Key==`Name`].Value | [0]]' --output text
 $newItems.Add($awsObj) | Out-Null
 $awsObj | foreach { $newItems = $_.split(); $hashTable.Add(@{"$($newItems[1])" = "$($newItems[0])" }) | Out-Null }
@@ -78,7 +79,7 @@ function ListInstanceScripts() {
     }
 }
 
-# Place the specified script into S3 bucket to be picked up by instance.
+# Place the specified script into S3 bucket to be picked up by the EC2 instance(s).
 function PutInS3($scriptToPush) {
     $dir = Get-ChildItem .\sh-scripts -Name
     foreach ($d in $dir) {
